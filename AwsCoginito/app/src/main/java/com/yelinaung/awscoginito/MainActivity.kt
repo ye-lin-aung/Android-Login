@@ -23,6 +23,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.mcxiaoke.koi.KoiConfig
 import com.mcxiaoke.koi.async.asyncSafe
 import com.mcxiaoke.koi.async.mainThreadSafe
+import com.mcxiaoke.koi.ext.newIntent
 import com.mcxiaoke.koi.log.logd
 import com.yelinaung.awscoginito.databinding.ActivityLoginBinding
 import java.util.*
@@ -45,6 +46,9 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
                 Regions.US_EAST_1 //Region
         )
 
+        credentialsProvider!!.registerIdentityChangedListener { oldId, newId ->
+            logd { newId }
+        }
         val signInButton = findViewById(R.id.sign_in_button) as SignInButton
         signInButton.setSize(SignInButton.SIZE_WIDE)
         signInButton.setScopes(gso.scopeArray)
@@ -76,25 +80,14 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
                     logd {
                         credentialsProvider!!.identityId
                     }
-                    
+                    mainThreadSafe {
+                        var extras = com.mcxiaoke.koi.ext.Bundle { putString(Intent.EXTRA_TEXT, credentialsProvider!!.identityId) }
+                        startActivity(newIntent<CredentailsActivity>(extras))
+                    }
+
                 }
             }
         })
-//        LoginManager.getInstance().registerCallback(callbackManager,
-//                object : FacebookCallback<LoginResult> {
-//                    override fun onSuccess(loginResult: LoginResult) {
-//                        // App code
-//                    }
-//
-//                    override fun onCancel() {
-//                        // App code
-//                    }
-//
-//                    override fun onError(exception: FacebookException) {
-//                        // App code
-//                    }
-//                })
-        // Callback registration
 
 
         mGoogleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build()
@@ -105,6 +98,10 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
             asyncSafe {
                 logd {
                     credentialsProvider!!.identityId
+                }
+                mainThreadSafe {
+                    var extras = com.mcxiaoke.koi.ext.Bundle { putString(Intent.EXTRA_TEXT, credentialsProvider!!.identityId) }
+                    startActivity(newIntent<CredentailsActivity>(extras))
                 }
 
             }
@@ -129,7 +126,8 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
                 credentialsProvider!!.identityId
             }
             mainThreadSafe {
-
+                var extras = com.mcxiaoke.koi.ext.Bundle { putString(Intent.EXTRA_TEXT, credentialsProvider!!.identityId) }
+                startActivity(newIntent<CredentailsActivity>(extras))
             }
 
         }
