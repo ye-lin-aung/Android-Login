@@ -52,7 +52,12 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
         KoiConfig.logEnabled = true //default is false
         KoiConfig.logLevel = Log.VERBOSE // default is Log.ASSERT
         acitivitybinding!!.emailSignInButton.setOnClickListener {
-            asyncLogin()
+            asyncSafe {
+                logd {
+                    credentialsProvider!!.identityId
+                }
+
+            }
         }
 
 //        credentialsProvider!!.registerIdentityChangedListener { oldId, newId ->
@@ -62,9 +67,7 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
 
     fun asyncLogin() {
         asyncSafe {
-            logd {
-                "HERE" + credentialsProvider!!.identityId
-            }
+
             GooglePlayServicesUtil.isGooglePlayServicesAvailable(applicationContext)
             val am = AccountManager.get(this.getCtx())
             val accounts = am.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE)
@@ -78,7 +81,7 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
                 credentialsProvider!!.identityId
             }
             mainThreadSafe {
-                
+
             }
 
         }
