@@ -28,6 +28,9 @@ dependencies {
   testCompile 'junit:junit:4.12'
   compile 'com.android.support:appcompat-v7:23.4.0'
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  compile 'com.amazonaws:aws-android-sdk-core:2.2.+'
+  compile 'com.amazonaws:aws-android-sdk-s3:2.2.+'
+  compile 'com.amazonaws:aws-android-sdk-ddb:2.2.+'
 }
 repositories {
   mavenCentral()
