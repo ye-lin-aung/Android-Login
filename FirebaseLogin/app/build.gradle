@@ -28,6 +28,11 @@ android {
   }
 
 
+  dexOptions {
+    incremental true
+    javaMaxHeapSize "4g"
+    preDexLibraries = false
+  }
   sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
   }

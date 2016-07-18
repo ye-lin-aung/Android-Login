@@ -3,32 +3,42 @@ package com.yelinaung.firebaselogin
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.mcxiaoke.koi.KoiConfig
 import com.mcxiaoke.koi.log.logd
 import com.yelinaung.firebaselogin.databinding.ActivityLoginBinding
 
 class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnCompleteListener<AuthResult> {
 
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    var firebaselistener: FirebaseAuth.AuthStateListener = null!!
-    var binding: ActivityLoginBinding = null!!
+    var firebaselistener: FirebaseAuth.AuthStateListener? = null
+    var binding: ActivityLoginBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        binding = DataBindingUtil.setContentView<ActivityLoginBinding>(this, R.layout.activity_login)
+        KoiConfig.logEnabled = true //default is false
+        // true == Log.VERBOSE
+        // false == Log.ASSERT
+        // optional
+        KoiConfig.logLevel = Log.VERBOSE // default is Log.ASSERT
+        //
         firebaselistener = this
-        binding.emailSignInButton.setOnClickListener {
-            firebaseAuth.signInWithEmailAndPassword(binding.email.text.toString(), binding.password.text.toString()).addOnCompleteListener(this)
+        binding!!.emailSignInButton.setOnClickListener {
+            logd { "HEre" }
+            firebaseAuth.signInWithEmailAndPassword(binding!!.email.text.toString(), binding!!.password.text.toString()).addOnCompleteListener(this)
         }
 
     }
 
     override fun onStart() {
         super.onStart()
-        firebaseAuth.addAuthStateListener(firebaselistener);
+        firebaseAuth.addAuthStateListener(firebaselistener!!);
     }
 
     override fun onComplete(task: Task<AuthResult>) {
@@ -39,6 +49,9 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
         // signed in user can be handled in the listener.
         if (!task.isSuccessful()) {
             logd { "signInWithEmail" + task.getException() }
+            if (task.exception is FirebaseAuthInvalidUserException) {
+                firebaseAuth.createUserWithEmailAndPassword(binding!!.email.text.toString(), binding!!.password.text.toString()).addOnCompleteListener(this)
+            }
             Toast.makeText(this, "Authentication failed.",
                     Toast.LENGTH_SHORT).show();
         }
@@ -47,7 +60,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
     override fun onStop() {
         super.onStop()
         if (firebaselistener != null) {
-            firebaseAuth.removeAuthStateListener(firebaselistener)
+            firebaseAuth.removeAuthStateListener(firebaselistener!!)
         }
     }
 
