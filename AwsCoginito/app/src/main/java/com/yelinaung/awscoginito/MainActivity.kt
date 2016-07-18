@@ -10,6 +10,8 @@ import android.view.View
 import com.amazonaws.auth.CognitoCachingCredentialsProvider
 import com.amazonaws.auth.CognitoCredentialsProvider
 import com.amazonaws.regions.Regions
+import com.facebook.*
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
     var credentialsProvider: CognitoCredentialsProvider? = null
     var acitivitybinding: ActivityLoginBinding? = null
     var mGoogleApiClient: GoogleApiClient? = null
+    var callbackManager: CallbackManager? = null
     val RC_SIGN_IN = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +44,57 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
                 BuildConfig.AWS_POOL_ID, // your identity pool id
                 Regions.US_EAST_1 //Region
         )
+
         val signInButton = findViewById(R.id.sign_in_button) as SignInButton
         signInButton.setSize(SignInButton.SIZE_WIDE)
         signInButton.setScopes(gso.scopeArray)
         signInButton.setOnClickListener(this)
+
+
+        val loginButton = acitivitybinding!!.loginButton
+        loginButton.setReadPermissions("email")
+        // If using in a fragment
+
+        // Other app specific specialization
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = com.facebook.CallbackManager.Factory.create();
+        loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onCancel() {
+
+            }
+
+            override fun onError(error: FacebookException?) {
+
+            }
+
+            override fun onSuccess(result: LoginResult?) {
+                logd { result }
+                asyncSafe {
+                    val logins = HashMap<String, String>()
+                    logins.put("graph.facebook.com", AccessToken.getCurrentAccessToken().getToken())
+                    credentialsProvider!!.setLogins(logins)
+                    logd {
+                        credentialsProvider!!.identityId
+                    }
+                    
+                }
+            }
+        })
+//        LoginManager.getInstance().registerCallback(callbackManager,
+//                object : FacebookCallback<LoginResult> {
+//                    override fun onSuccess(loginResult: LoginResult) {
+//                        // App code
+//                    }
+//
+//                    override fun onCancel() {
+//                        // App code
+//                    }
+//
+//                    override fun onError(exception: FacebookException) {
+//                        // App code
+//                    }
+//                })
+        // Callback registration
 
 
         mGoogleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build()
@@ -60,9 +110,7 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
             }
         }
 
-//        credentialsProvider!!.registerIdentityChangedListener { oldId, newId ->
-//            logd { "$oldId : $newId" }
-//        }
+
     }
 
     fun asyncLogin() {
@@ -101,7 +149,7 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        callbackManager!!.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
@@ -116,13 +164,8 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
             val acct = result.getSignInAccount()
             logd { "handleSignInResult:" + acct.displayName }
             asyncLogin()
-
-
-            //   mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()))
-            //  updateUI(true)
         } else {
-            // Signed out, show unauthenticated UI.
-            //updateUI(false)
+
         }
     }
 
