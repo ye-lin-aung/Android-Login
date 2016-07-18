@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "95806688407",
+    "project_id": "awscoginito"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:95806688407:android:cddcdebae40a98d6",
+        "android_client_info": {
+          "package_name": "com.yelinaung.awscoginito"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "95806688407-obhmk6h76qcfqvie367a7t18gip7f9qo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yelinaung.awscoginito",
+            "certificate_hash": "741A44496426FDFA465BC4A28B73415D3F3C2ADC"
+          }
+        },
+        {
+          "client_id": "95806688407-f3egghnci1q4kjirvpe41hp5ssu8bs9d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjYzx1_svaKIiKWr44JpBEVBqdW7-RjAY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.google.gms.google-services'
 
 def poolId = rootProject.aws_pool
 
@@ -40,7 +41,9 @@ dependencies {
   compile 'com.amazonaws:aws-android-sdk-s3:2.2.+'
   compile 'com.amazonaws:aws-android-sdk-ddb:2.2.+'
   compile 'com.mcxiaoke.koi:core:0.5.3'
+  compile 'com.mcxiaoke.koi:async:0.5.3'
   compile 'com.android.support:design:23.4.0'
+  compile 'com.google.android.gms:play-services-auth:8.3.0'
 }
 
 kapt {
