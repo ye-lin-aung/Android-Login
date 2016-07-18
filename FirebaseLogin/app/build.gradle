@@ -7,7 +7,10 @@ android {
 
   defaultConfig {
     applicationId "com.yelinaung.firebaselogin"
-    minSdkVersion 14
+    minSdkVersion 15
+    dataBinding{
+      enabled = true
+    }
     targetSdkVersion 23
     versionCode 1
     versionName "1.0"
@@ -18,17 +21,40 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
+  packagingOptions {
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/LICENSE-FIREBASE.txt'
+    exclude 'META-INF/NOTICE'
+  }
+
+
   sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
   }
 }
+
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
   testCompile 'junit:junit:4.12'
   compile 'com.android.support:appcompat-v7:23.4.0'
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  kapt 'com.android.databinding:compiler:1.0-rc4'
+  compile 'com.mcxiaoke.koi:core:0.5.3'
+  compile 'com.mcxiaoke.koi:async:0.5.3'
+  compile 'com.android.support:design:23.4.0'
+  compile 'com.google.android.gms:play-services:9.2.0'
+  compile 'com.google.firebase:firebase-auth:9.0.0'
+  compile 'com.google.firebase:firebase-core:9.0.0'
+  compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+  compile 'com.github.florent37:materialtextfield:1.0.5'
 }
+kapt {
+  generateStubs = true
+}
+
+apply plugin: 'com.google.gms.google-services'
+
 repositories {
   mavenCentral()
 }

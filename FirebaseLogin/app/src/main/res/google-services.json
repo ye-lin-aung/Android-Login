@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "120892862670",
+    "firebase_url": "https://fir-authtest-a04c2.firebaseio.com",
+    "project_id": "fir-authtest-a04c2",
+    "storage_bucket": "fir-authtest-a04c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120892862670:android:ee21a21f86f65952",
+        "android_client_info": {
+          "package_name": "com.yelinaung.firebaselogin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "120892862670-5ggec4mgb3nbugg5qnv3k88r28pcvp4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn7ONojegjdZboQ7wvQR31_4wXoTix64Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
