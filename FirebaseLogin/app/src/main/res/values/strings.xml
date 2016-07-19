@@ -3,7 +3,7 @@
 	<string name="facebook_app_id">1751492548459054</string>
 	<string name="title_activity_login">Sign in</string>
 
-    <!-- Strings related to login -->
+	<!-- Strings related to login -->
 	<string name="prompt_email">Email</string>
 	<string name="prompt_password">Password (optional)</string>
 	<string name="action_sign_in">Sign in or register</string>
