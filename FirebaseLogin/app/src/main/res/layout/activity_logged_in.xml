@@ -13,10 +13,11 @@
 			tools:context="com.yelinaung.firebaselogin.LoggedInActivity">
 
 		<Button
+				android:id="@+id/btn_signOut"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_centerInParent="true"
-				android:text="Signed In"/>
+				android:text="Signed Out"/>
 
 	</RelativeLayout>
 </layout>

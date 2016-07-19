@@ -12,6 +12,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.mcxiaoke.koi.KoiConfig
+import com.mcxiaoke.koi.ext.newIntent
 import com.mcxiaoke.koi.ext.toast
 import com.mcxiaoke.koi.log.logd
 import com.yelinaung.firebaselogin.databinding.ActivityLoginBinding
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
         firebaselistener = this
 
         if (firebaseAuth.currentUser != null) {
-            toast("User is signed In")
+            startActivity(newIntent<LoggedInActivity>())
         } else {
             toast("User isn't signed In")
         }
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
         val user = firebaseAuth.currentUser
         if (user != null) {
             // User is signed in
+            startActivity(newIntent<LoggedInActivity>())
             logd { "onAuthStateChanged:signed_in:" + user.uid }
         } else {
             // User is signed out
