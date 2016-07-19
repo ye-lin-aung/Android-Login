@@ -1,6 +1,7 @@
 package com.yelinaung.firebaselogin
 
 import android.databinding.DataBindingUtil
+
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -17,23 +18,24 @@ import com.yelinaung.firebaselogin.databinding.ActivityLoginBinding
 class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnCompleteListener<AuthResult> {
 
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    var firebaselistener: FirebaseAuth.AuthStateListener? = null
+    var firebaselistener: FirebaseAuth.AuthStateListener? = FirebaseAuth.AuthStateListener { }
     var binding: ActivityLoginBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView<ActivityLoginBinding>(this, R.layout.activity_login)
         KoiConfig.logEnabled = true //default is false
-        // true == Log.VERBOSE
-        // false == Log.ASSERT
-        // optional
         KoiConfig.logLevel = Log.VERBOSE // default is Log.ASSERT
-        //
         firebaselistener = this
         binding!!.emailSignInButton.setOnClickListener {
-            logd { "HEre" }
             firebaseAuth.signInWithEmailAndPassword(binding!!.email.text.toString(), binding!!.password.text.toString()).addOnCompleteListener(this)
         }
-
+        binding!!.emailSignUpButton.setOnClickListener {
+            firebaseAuth.createUserWithEmailAndPassword(binding!!.email.text.toString(), binding!!.password.text.toString()).addOnCompleteListener(this)
+        }
+        binding!!.anonymousSignIn.setOnClickListener {
+            firebaseAuth.signInAnonymously()
+        }
+        //binding!!.emailLoginForm
     }
 
     override fun onStart() {
@@ -43,7 +45,6 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
 
     override fun onComplete(task: Task<AuthResult>) {
         logd { "signInWithEmail:onComplete:" + task.isSuccessful() }
-
         // If sign in fails, display a message to the user. If sign in succeeds
         // the auth state listener will be notified and logic to handle the
         // signed in user can be handled in the listener.
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
 
     override fun onStop() {
         super.onStop()
+
         if (firebaselistener != null) {
             firebaseAuth.removeAuthStateListener(firebaselistener!!)
         }
@@ -74,4 +76,5 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
             logd { "onAuthStateChanged:signed_out" }
         }
     }
+
 }
