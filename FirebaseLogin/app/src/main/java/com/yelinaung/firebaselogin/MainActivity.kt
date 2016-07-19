@@ -12,6 +12,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.mcxiaoke.koi.KoiConfig
+import com.mcxiaoke.koi.ext.toast
 import com.mcxiaoke.koi.log.logd
 import com.yelinaung.firebaselogin.databinding.ActivityLoginBinding
 
@@ -26,6 +27,13 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
         KoiConfig.logEnabled = true //default is false
         KoiConfig.logLevel = Log.VERBOSE // default is Log.ASSERT
         firebaselistener = this
+
+        if (firebaseAuth.currentUser != null) {
+            toast("User is signed In")
+        } else {
+            toast("User isn't signed In")
+        }
+
         binding!!.emailSignInButton.setOnClickListener {
             firebaseAuth.signInWithEmailAndPassword(binding!!.email.text.toString(), binding!!.password.text.toString()).addOnCompleteListener(this)
         }
@@ -35,7 +43,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
         binding!!.anonymousSignIn.setOnClickListener {
             firebaseAuth.signInAnonymously()
         }
-        //binding!!.emailLoginForm
+
     }
 
     override fun onStart() {
@@ -55,6 +63,8 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
             }
             Toast.makeText(this, "Authentication failed.",
                     Toast.LENGTH_SHORT).show();
+        } else {
+
         }
     }
 
