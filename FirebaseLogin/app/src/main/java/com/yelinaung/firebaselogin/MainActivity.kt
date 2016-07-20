@@ -1,7 +1,6 @@
 package com.yelinaung.firebaselogin
 
 import android.databinding.DataBindingUtil
-
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -49,21 +48,20 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
 
     override fun onStart() {
         super.onStart()
-        firebaseAuth.addAuthStateListener(firebaselistener!!);
+        firebaseAuth.addAuthStateListener(firebaselistener!!)
     }
 
     override fun onComplete(task: Task<AuthResult>) {
-        logd { "signInWithEmail:onComplete:" + task.isSuccessful() }
-        // If sign in fails, display a message to the user. If sign in succeeds
-        // the auth state listener will be notified and logic to handle the
-        // signed in user can be handled in the listener.
-        if (!task.isSuccessful()) {
-            logd { "signInWithEmail" + task.getException() }
+        logd { "signInWithEmail:onComplete:" + task.isSuccessful }
+        
+        if (!task.isSuccessful) {
+            logd { "signInWithEmail" + task.exception }
             if (task.exception is FirebaseAuthInvalidUserException) {
                 firebaseAuth.createUserWithEmailAndPassword(binding!!.email.text.toString(), binding!!.password.text.toString()).addOnCompleteListener(this)
             }
             Toast.makeText(this, "Authentication failed.",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT).show()
+
         } else {
 
         }
@@ -90,3 +88,4 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
     }
 
 }
+
