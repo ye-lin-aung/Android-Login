@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.mcxiaoke.koi.ext.newIntent
 import com.yelinaung.firebaselogin.databinding.ActivityLoggedInBinding
 
 class LoggedInActivity : AppCompatActivity() {
@@ -14,7 +15,7 @@ class LoggedInActivity : AppCompatActivity() {
         val activityBinding = DataBindingUtil.setContentView<ActivityLoggedInBinding>(this, R.layout.activity_logged_in)
         activityBinding.btnSignOut.setOnClickListener {
             firebaseAuth.signOut()
-            finish()
+            startActivity(newIntent<MainActivity>())
         }
 
     }
