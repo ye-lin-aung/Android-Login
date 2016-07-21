@@ -10,6 +10,7 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.Auth
@@ -26,7 +27,7 @@ import com.mcxiaoke.koi.ext.toast
 import com.mcxiaoke.koi.log.logd
 import com.yelinaung.firebaselogin.databinding.ActivityLoginBinding
 
-class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnCompleteListener<AuthResult>, GoogleApiClient.OnConnectionFailedListener {
+class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnCompleteListener<AuthResult>,FacebookCallback<LoginResult>, GoogleApiClient.OnConnectionFailedListener {
 
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     var firebaselistener: FirebaseAuth.AuthStateListener? = FirebaseAuth.AuthStateListener { }
@@ -44,23 +45,8 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
         mCallbackManager = com.facebook.CallbackManager.Factory.create()
         val loginButton = findViewById(R.id.login_button) as LoginButton
         loginButton.setReadPermissions("email", "public_profile")
-        loginButton.registerCallback(mCallbackManager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(loginResult: LoginResult) {
-
-                handleFacebookAccessToken(loginResult.getAccessToken())
-            }
-
-            override fun onCancel() {
-
-                // ...
-            }
-
-            override fun onError(error: FacebookException) {
-
-                // ...
-            }
-        })
-
+        LoginManager.getInstance().registerCallback(mCallbackManager,this)
+        loginButton.registerCallback(mCallbackManager,this)
         if (firebaseAuth.currentUser != null) {
             startActivity(newIntent<LoggedInActivity>())
             finish()
@@ -83,6 +69,18 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
         binding!!.signInButton.setOnClickListener {
             signIn()
         }
+    }
+
+    override fun onCancel() {
+
+    }
+
+    override fun onError(error: FacebookException?) {
+
+    }
+
+    override fun onSuccess(result: LoginResult?) {
+        handleFacebookAccessToken(result!!.getAccessToken())
     }
 
     override fun onConnectionFailed(p0: ConnectionResult) {
@@ -131,6 +129,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, OnComp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
+        mCallbackManager!!.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {

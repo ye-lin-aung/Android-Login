@@ -11,6 +11,7 @@ import com.amazonaws.auth.CognitoCachingCredentialsProvider
 import com.amazonaws.auth.CognitoCredentialsProvider
 import com.amazonaws.regions.Regions
 import com.facebook.*
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.api.Auth
@@ -29,7 +30,7 @@ import com.yelinaung.awscoginito.databinding.ActivityLoginBinding
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener, FacebookCallback<LoginResult>, View.OnClickListener {
 
     var credentialsProvider: CognitoCredentialsProvider? = null
     var acitivitybinding: ActivityLoginBinding? = null
@@ -62,32 +63,8 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
         // Other app specific specialization
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = com.facebook.CallbackManager.Factory.create();
-        loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-            override fun onCancel() {
-
-            }
-
-            override fun onError(error: FacebookException?) {
-
-            }
-
-            override fun onSuccess(result: LoginResult?) {
-                logd { result }
-                asyncSafe {
-                    val logins = HashMap<String, String>()
-                    logins.put("graph.facebook.com", AccessToken.getCurrentAccessToken().getToken())
-                    credentialsProvider!!.setLogins(logins)
-                    logd {
-                        credentialsProvider!!.identityId
-                    }
-                    mainThreadSafe {
-                        var extras = com.mcxiaoke.koi.ext.Bundle { putString(Intent.EXTRA_TEXT, credentialsProvider!!.identityId) }
-                        startActivity(newIntent<CredentailsActivity>(extras))
-                    }
-
-                }
-            }
-        })
+        loginButton.registerCallback(callbackManager, this)
+        LoginManager.getInstance().registerCallback(callbackManager, this)
 
 
         mGoogleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build()
@@ -110,17 +87,45 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
 
     }
 
+    override fun onCancel() {
+
+    }
+
+    override fun onError(error: FacebookException?) {
+
+    }
+
+    override fun onSuccess(result: LoginResult?) {
+        logd { result }
+        asyncSafe {
+            val logins = HashMap<String, String>()
+            logins.put("graph.facebook.com", AccessToken.getCurrentAccessToken().token)
+            logd { "Going to logged in!" }
+            credentialsProvider!!.setLogins(logins)
+            logd {
+                credentialsProvider!!.identityId
+            }
+            mainThreadSafe {
+                var extras = com.mcxiaoke.koi.ext.Bundle { putString(Intent.EXTRA_TEXT, credentialsProvider!!.identityId) }
+                startActivity(newIntent<CredentailsActivity>(extras))
+            }
+
+        }
+    }
+
     fun asyncLogin() {
+        logd { "JKH" }
         asyncSafe {
 
             GooglePlayServicesUtil.isGooglePlayServicesAvailable(applicationContext)
             val am = AccountManager.get(this.getCtx())
             val accounts = am.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE)
+            logd { "JKH2" }
             val token = GoogleAuthUtil.getToken(applicationContext, accounts[0].name,
-                    "audience:server:client_id:YOUR_GOOGLE_CLIENT_ID")
+                    "audience:server:client_id:95806688407-f3egghnci1q4kjirvpe41hp5ssu8bs9d.apps.googleusercontent.com")
             val logins = HashMap<String, String>()
             logins.put("accounts.google.com", token)
-
+            logd { "JKH3" }
             credentialsProvider!!.setLogins(logins)
             logd {
                 credentialsProvider!!.identityId
